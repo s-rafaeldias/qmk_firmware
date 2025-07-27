@@ -23,4 +23,4 @@
   #define OLED_TIMEOUT 30000
 #endif
 
-#define RGBLIGHT_SLEEP
+#define TAPPING_TERM 200
