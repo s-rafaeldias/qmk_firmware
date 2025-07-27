@@ -14,8 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
-#include "quantum/rgblight/rgblight.h"
-#include "quantum/color.h"
+
+#define SYM_ESC LT(_SYMBOLS, KC_ESC)
+#define NUM_ESC LT(_NUMBERS, KC_ESC)
 
 enum layers {
     _HOMEROWMOD,
@@ -23,12 +24,6 @@ enum layers {
     _SYMBOLS
 };
 
-void keyboard_post_init_user(void) {
-    rgblight_sethsv_noeeprom(HSV_AZURE);
-}
-
-#define SYM_ESC LT(_SYMBOLS, KC_ESC)
-#define NUM_NUM LT(_NUMBERS, KC_ESC)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
@@ -40,13 +35,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |-----+------+--------+------+------|     |------+------+------+------+------|
  * |  Z  |   X  |   C    |   V  |   B  |     |   N  |   M  |   ,  |   .  |   /  |
  * `------------+--------+------+------|     |------+------+------+-------------'
- *              | Esc+N  | Tab  | Spc  |     | Ent  | BSpc | MO(num) |
+ *              | Esc+Vi | Tab  | Spc  |     | Ent  | BSpc | MO(num) |
  *              `----------------------'     `-----------------------'
  */
 [_HOMEROWMOD] = LAYOUT_split_3x5_3(
   KC_Q,           KC_W,         KC_E,          KC_R,         KC_T,    /*|*/    KC_Y,    KC_U,           KC_I,           KC_O,           KC_P,
-  KC_A,           LOPT_T(KC_S), LCMD_T(KC_D),  LCTL_T(KC_F), KC_G,    /*|*/    KC_H,    RCTL_T(KC_J),   RCMD_T(KC_K),   ROPT_T(KC_L),   KC_SCLN,
-  LSFT_T(KC_Z),   KC_X,         KC_C,          KC_V,         KC_B,    /*|*/    KC_N,    KC_M,           KC_COMM,        KC_DOT,         RSFT_T(KC_SLSH),
+  LSFT_T(KC_A),   LOPT_T(KC_S), LCMD_T(KC_D),  LCTL_T(KC_F), KC_G,    /*|*/    KC_H,    RCTL_T(KC_J),   RCMD_T(KC_K),   ROPT_T(KC_L),   RSFT_T(KC_SCLN),
+  KC_Z,           KC_X,         KC_C,          KC_V,         KC_B,    /*|*/    KC_N,    KC_M,           KC_COMM,        KC_DOT,         KC_SLSH,
                                 SYM_ESC,       KC_TAB,       KC_SPC,  /*|*/    KC_ENT,  KC_BSPC,        MO(_NUMBERS)
 ),
 [_NUMBERS] = LAYOUT_split_3x5_3(
@@ -73,4 +68,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______, _______, _______,   _______,  _______,       _______,  KC_LCBR,  KC_PERC,   KC_RCBR,  KC_EQUAL,
                     _______,   _______,  _______,       _______,  _______,  _______
 )
+};
+
+void keyboard_post_init_user(void) {
+    rgblight_sethsv_noeeprom(HSV_AZURE);
+};
+
+enum combos {
+    ESC,
+    TMUX,
+};
+
+const uint16_t PROGMEM esc_combo[] = {KC_J, KC_K, COMBO_END};
+const uint16_t PROGMEM tmux_combo[] = {KC_COMMA, KC_DOT, COMBO_END};
+
+combo_t key_combos[] = {
+    [ESC] = COMBO(esc_combo, KC_ESC),
+    [TMUX] = COMBO(tmux_combo, LCTL(KC_B)),
 };
